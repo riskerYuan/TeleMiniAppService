@@ -1,0 +1,27 @@
+{
+  "name": "avaservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m3360202/avaService.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m3360202/avaService/issues"
+  },
+  "homepage": "https://github.com/m3360202/avaService#readme",
+  "dependencies": {
+    "langchain": "^0.0.139"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
