@@ -18,6 +18,7 @@ import { loadQAMapReduceChain } from 'langchain/chains';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 
+const tokenList = ['sk-kyTesnlEcYH2Wk4PpsfRCysuTOMzX', 'sk-2NXtwfKhQ7PkEHdHavbiU9Iq0KZTwK'];
 // langchain
 const OpenAIlangchain = new ChatOpenAI({
     openAIApiKey: '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',
@@ -32,9 +33,22 @@ const AzureOpenAIlangchain = new ChatOpenAI({
 });
 
 addEventListener('fetch', event => {
-    event.respondWith(handleRequestAIChat(event.request));
-    event.respondWith(handleRequestTest(event.request));
-    
+    const url = new URL(event.request.url);
+    //判断tokens是否等于tokenList中的某一个
+    const tokens = url.searchParams.get('token');
+    if (tokens !== null && tokenList.includes(tokens)) {
+        if (event.request.method === 'POST' && url.pathname === '/handleRequestAIChat') {
+            event.respondWith(handleRequestAIChat(event.request));
+        } else if (event.request.method === 'GET' && url.pathname === '/handleRequestTest') {
+            event.respondWith(handleRequestTest(event.request));
+        } else {
+            // 如果是其他类型请求或者url路径不匹配，返回405 Method Not Allowed
+            event.respondWith(new Response('Invalid request method or path', { status: 405 }));
+        }
+    } else {
+        event.respondWith(new Response('Invalid token', { status: 403 }));
+    }
+
 })
 
 async function handleRequestAIChat(request) {
@@ -67,7 +81,7 @@ async function handleRequestAIChat(request) {
 
 async function handleRequestTest(request) {
     try {
-        
+
         const response = 'ok this is a test';
         //将结果返回给客户端
         return new Response(JSON.stringify(response), { status: 200 });
