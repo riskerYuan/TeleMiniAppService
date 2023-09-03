@@ -35,7 +35,7 @@ const AzureOpenAIlangchain = new ChatOpenAI({
 addEventListener('fetch', event => {
     const url = new URL(event.request.url);
     //判断tokens是否等于tokenList中的某一个
-    const tokens = url.searchParams.get('token');
+    const {tokens} = event.request.json();
     if (tokens !== null && tokenList.includes(tokens)) {
         if (event.request.method === 'POST' && url.pathname === '/handleRequestAIChat') {
             event.respondWith(handleRequestAIChat(event.request));
