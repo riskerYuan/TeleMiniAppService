@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="http://iteminfo.aliensoft.com.cn/avaservice.png" width="100" alt="Ava Service For Serverless" />
+  <img src="http://iteminfo.aliensoft.com.cn/avaservice.png" width="125" alt="Ava Service For Serverless" />
   <h1 align="center"><a href="">Ava Service For Serverless</a></h1>
 </p>
 
@@ -23,6 +23,3 @@ The easiest way to make SQL queries is to use the Database query builder. It all
 
 In the following example, we select all the posts from the users table.
 
-```js
-
-```
