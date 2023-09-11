@@ -1,5 +1,5 @@
 
-import settings from './settings';
+import settings from '../settings.js';
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "langchain/schema";
 import { BufferMemory, ChatMessageHistory } from "langchain/memory";
@@ -12,6 +12,7 @@ import { loadQARefineChain } from "langchain/chains";
 import { PromptTemplate } from "langchain/prompts";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
+
 const azureApiKey = settings.azureApiKey;
 
 const apiKey = settings.apiKey;

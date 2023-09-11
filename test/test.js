@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const cors = require('cors');
-const { handleRequestAIChatGpt35, handleRequestTest } = require('../functions-jest');
+import { handleRequestTest } from '../utils';
 
 
 beforeAll(() => {

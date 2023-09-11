@@ -11,4 +11,18 @@ module.exports = {
   optimization: {
     minimize: true,
   },
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'] // 这个预设会根据你的目标环境，自动决定应用哪些转换/插件
+          }
+        }
+      }
+    ]
+  }
 };

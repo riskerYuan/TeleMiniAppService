@@ -1,9 +1,7 @@
+const express = require('express');
+const cors = require('cors');
 
-import express from 'express';
-import cors from 'cors';
-
-
-import { handleRequestAIChatGpt35, handleRequestTest } from './functions.js';
+import { handleRequestAIChatGpt35, handleRequestTest } from './utils';
 
 
 const app = express();
