@@ -19,7 +19,5 @@ Start Ava Service local http service
 `npm start`
 Run Ava Service unitest
 `npm run test`
-The easiest way to make SQL queries is to use the Database query builder. It allows you to construct simple and complex SQL queries using JavaScript methods.
 
-In the following example, we select all the posts from the users table.
 
