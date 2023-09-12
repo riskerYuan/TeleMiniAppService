@@ -1,7 +1,8 @@
 const request = require('supertest');
 const express = require('express');
 const cors = require('cors');
-import { handleRequestTest } from '../utils';
+
+import { handleRequestTest, handleRequestAIChatGpt35,handleRequestAIChatGpt4, handleRequestAIWidgetConvergeGpt35, handleRequestAIWidgetConvergeGpt4, handleRequestAIWidgetDivergeGpt35, handleRequestAIWidgetDivergeGpt4,getDefinePromptTemplate,langchainRefineProcessingText  } from '../utils';
 
 
 beforeAll(() => {
@@ -10,7 +11,13 @@ beforeAll(() => {
     app.use(cors());
 
     app.get('/handleRequestTest', jest.fn(handleRequestTest));
-    // app.post('/handleRequestAIChatGpt35', jest.fn(handleRequestAIChatGpt35));
+    app.post('/handleRequestAIChatGpt35', jest.fn(handleRequestAIChatGpt35));
+    app.post('/handleRequestAIChatGpt4', jest.fn(handleRequestAIChatGpt4));
+    app.post('/handleRequestAIWidgetConvergeGpt35', jest.fn(handleRequestAIWidgetConvergeGpt35));
+    app.post('/handleRequestAIWidgetConvergeGpt4', jest.fn(handleRequestAIWidgetConvergeGpt4));
+    app.post('/handleRequestAIWidgetDivergeGpt35', jest.fn(handleRequestAIWidgetDivergeGpt35));
+    app.post('/handleRequestAIWidgetDivergeGpt4', jest.fn(handleRequestAIWidgetDivergeGpt4));
+
 });
 
 test('handleRequestTest', async () => {
@@ -22,42 +29,107 @@ test('handleRequestTest', async () => {
     expect(text).toBe('ok this is a test');
 });
 
-// test('handleRequestAIChatGpt35HasContext', (done) => {
-//     const req = request(app).post('/handleRequestAIChatGpt35').send({messages: [],
-//     prompt: "hi" });
-//     let data = '';
-//     req.on('info', function(res) {
-//         res.on('data', function(chunk){
-//             data += chunk;
-//         });
-//         res.on('end', function(){
-//             expect(data).not.toBeNull();
-//             // 添加你的其他断言
-//             done();
-//         });
-//     });
+test('handleRequestAIChatGpt35 returns a chunk has no context', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        prompt: 'hi',
+        messages: [],
+    };
+    const res = await request(app)
+        .post('/handleRequestAIChatGpt35')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
 
-//     req.on('error', function(err) {
-//         console.log(err);
-//         done(err);
-//     });
+},15000);
 
-//     req.write('hi');
-//     req.end();
-// }, 300000);
+test('handleRequestAIChatGpt35 returns a chunk has context', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        prompt: 'hi',
+        messages: [{ role: 'user', content: '你好' }],
+    };
+    const res = await request(app)
+        .post('/handleRequestAIChatGpt35')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
 
-// test('handleRequestAIChatGpt35HasContext', async (done) => {
-//     const req = request(app).post('/handleRequestAIChatGpt35').send({messages: [],
-//     prompt: "hi" });
+},15000);
 
-//     let data = '';
-//     req.on('data', (chunk) => {
-//         data += chunk;
-//     })
+test('handleRequestAIChatGpt4 returns a chunk has no context', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        prompt: 'hi',
+        messages: [],
+    };
+    const res = await request(app)
+        .post('/handleRequestAIChatGpt4')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
 
-//     req.on('end', () => {
-//         expect(data).not.toBeNull();
-//         // 添加你的其他断言
-//         done();
-//     }, 600000);
-// });
+},15000);
+
+test('handleRequestAIChatGpt4 returns a chunk has context', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        prompt: 'hi',
+        messages: [{ role: 'user', content: '你好' }],
+    };
+    const res = await request(app)
+        .post('/handleRequestAIChatGpt4')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
+
+},15000);
+
+test('handleRequestAIWidgetConvergeGpt35 endingPoint', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        commandData: '',
+        currentWidgetsTextContent: '',
+    };
+    const res = await request(app)
+        .post('/handleRequestAIWidgetConvergeGpt35')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
+
+},15000);
+
+test('handleRequestAIWidgetConvergeGpt4 endingPoint', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        commandData: '',
+        currentWidgetsTextContent: '',
+    };
+    const res = await request(app)
+        .post('/handleRequestAIWidgetConvergeGpt4')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
+
+},15000);
+
+test('handleRequestAIWidgetDivergeGpt35 endingPoint', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        commandData: '',
+        prompt: '',
+    };
+    const res = await request(app)
+        .post('/handleRequestAIWidgetDivergeGpt35')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
+
+},15000);
+
+test('handleRequestAIWidgetDivergeGpt4 endingPoint', async () => {
+    jest.setTimeout(30000); // Extend timeout if necessary
+    const body = {
+        commandData: '',
+        prompt: '',
+    };
+    const res = await request(app)
+        .post('/handleRequestAIWidgetDivergeGpt4')
+        .send(body)
+        .expect(200); // Expects HTTP status code 200
+
+},15000);
+

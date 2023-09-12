@@ -106,7 +106,7 @@ async function handleRequestAIChatGpt35(request) {
     // LLM
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "boardxai",
+      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       streaming: true,
@@ -280,7 +280,7 @@ async function handleRequestAIWidgetConvergeGpt35(request) {
 
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "boardxai",
+      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       temperature: commandData.temperature
@@ -322,7 +322,7 @@ async function handleRequestAIWidgetConvergeGpt35(request) {
 
     const refineEmbeddingsModelAzureOpenAI = {
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "boardxai",
+      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
       azureOpenAIApiDeploymentName: "boardx-text-embedding-ada",
       azureOpenAIApiVersion: "2023-06-01-preview",
       batchSize: 2048,
@@ -454,7 +454,7 @@ async function handleRequestAIWidgetDivergeGpt35(request) {
 
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "boardxai",
+      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       temperature: commandData.temperature

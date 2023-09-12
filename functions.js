@@ -29,7 +29,7 @@ async function handleRequestAIChatGpt35(request, res,next) {
         // LLM
         const AzureOpenAIlangchain = new ChatOpenAI({
             azureOpenAIApiKey: key,
-            azureOpenAIApiInstanceName: "boardxai",
+            azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
             azureOpenAIApiDeploymentName: "gpt35-16k",
             azureOpenAIApiVersion: "2023-06-01-preview",
             streaming: true,
