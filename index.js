@@ -1,4 +1,3 @@
-import langchain from "langchain";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage, SystemMessage, AIMessage } from "langchain/schema";
 import { BufferMemory, ChatMessageHistory } from "langchain/memory";
@@ -96,6 +95,7 @@ async function handleRequestAIChatGpt35(request) {
     const requestData = await request.json(); // 解析请求的 JSON 数据
     const promptValue = requestData.prompt;
     const messageValue = requestData.messages;
+    const promptPersonaData = requestData.promptPersonaData;
 
     console.log("prompt:", promptValue);
 
@@ -106,10 +106,30 @@ async function handleRequestAIChatGpt35(request) {
     // LLM
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
+      azureOpenAIApiInstanceName: "boardxai",
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       streaming: true,
+      temperature:
+        promptPersonaData && promptPersonaData.temperature
+          ? Number(promptPersonaData.temperature)
+          : 0.8,
+      maxTokens:
+        promptPersonaData && promptPersonaData.maximumLength
+          ? Number(promptPersonaData.maximumLength)
+          : 2048,
+      topP:
+        promptPersonaData && promptPersonaData.topP
+          ? Number(promptPersonaData.topP)
+          : 1,
+      frequencyPenalty:
+        promptPersonaData && promptPersonaData.frequencyPenalty
+          ? Number(promptPersonaData.frequencyPenalty)
+          : 0,
+      presencePenalty:
+        promptPersonaData && promptPersonaData.presencePenalty
+          ? Number(promptPersonaData.presencePenalty)
+          : 0,
     });
 
     const { readable, writable } = new TransformStream();
@@ -184,18 +204,49 @@ async function handleRequestAIChatGpt4(request) {
     const requestData = await request.json(); // 解析请求的 JSON 数据
     const promptValue = requestData.prompt;
     const messageValue = requestData.messages;
+    const promptPersonaData = requestData.promptPersonaData;
 
     console.log("prompt:", promptValue);
 
     console.log("messages:", messageValue);
 
-    const key = apiKeyTest;
+    const key = azureApiKeyGpt4;
 
     // LLM
-    const OpenAIlangchain = new ChatOpenAI({
-      openAIApiKey: key,
-      modelName: "gpt-4",
+    // const OpenAIlangchain = new ChatOpenAI({
+    //   openAIApiKey: key,
+    //   modelName: "gpt-4",
+    //   streaming: true,
+    // });
+
+    console.warn('gpt4 key')
+
+    const AzureOpenAIlangchain = new ChatOpenAI({
+      azureOpenAIApiKey: key,
+      azureOpenAIApiInstanceName: "boardxgpt4",
+      azureOpenAIApiDeploymentName: "gpt4",
+      azureOpenAIApiVersion: "2023-06-01-preview",
       streaming: true,
+      temperature:
+        promptPersonaData && promptPersonaData.temperature
+          ? Number(promptPersonaData.temperature)
+          : 0.8,
+      maxTokens:
+        promptPersonaData && promptPersonaData.maximumLength
+          ? Number(promptPersonaData.maximumLength)
+          : 2048,
+      topP:
+        promptPersonaData && promptPersonaData.topP
+          ? Number(promptPersonaData.topP)
+          : 1,
+      frequencyPenalty:
+        promptPersonaData && promptPersonaData.frequencyPenalty
+          ? Number(promptPersonaData.frequencyPenalty)
+          : 0,
+      presencePenalty:
+        promptPersonaData && promptPersonaData.presencePenalty
+          ? Number(promptPersonaData.presencePenalty)
+          : 0,
     });
 
     const { readable, writable } = new TransformStream();
@@ -220,7 +271,7 @@ async function handleRequestAIChatGpt4(request) {
     });
 
     const chain = new ConversationChain({
-      llm: OpenAIlangchain,
+      llm: AzureOpenAIlangchain,
       memory: memory,
     });
 
@@ -280,7 +331,7 @@ async function handleRequestAIWidgetConvergeGpt35(request) {
 
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
+      azureOpenAIApiInstanceName: "boardxai",
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       temperature: commandData.temperature
@@ -322,7 +373,7 @@ async function handleRequestAIWidgetConvergeGpt35(request) {
 
     const refineEmbeddingsModelAzureOpenAI = {
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
+      azureOpenAIApiInstanceName: "boardxai",
       azureOpenAIApiDeploymentName: "boardx-text-embedding-ada",
       azureOpenAIApiVersion: "2023-06-01-preview",
       batchSize: 2048,
@@ -364,13 +415,15 @@ async function handleRequestAIWidgetConvergeGpt4(request) {
     console.warn("commandData", commandData);
     console.warn("currentWidgetsTextContent", currentWidgetsTextContent);
 
-    const key = apiKeyTest;
+    const key = azureApiKeyGpt4;
 
     let totalTokens = null;
 
     const OpenAIlangchain = new ChatOpenAI({
-      openAIApiKey: key,
-      modelName: "gpt-4",
+      azureOpenAIApiKey: key,
+      azureOpenAIApiInstanceName: "boardxgpt4",
+      azureOpenAIApiDeploymentName: "gpt4",
+      azureOpenAIApiVersion: "2023-06-01-preview",
       temperature: commandData.temperature
         ? Number(commandData.temperature)
         : 0.8,
@@ -409,9 +462,11 @@ async function handleRequestAIWidgetConvergeGpt4(request) {
     console.warn("docOutput", docOutput);
 
     const refineEmbeddingsModelOpenAI = {
-      openAIApiKey: key,
+      azureOpenAIApiKey: key,
+      azureOpenAIApiInstanceName: "boardxgpt4",
+      azureOpenAIApiDeploymentName: "text-embedding-ada-002",
+      azureOpenAIApiVersion: "2023-06-01-preview",
       batchSize: 2048,
-      modelName: "text-embedding-ada-002",
       maxRetries: 10,
       maxConcurrency: 10,
     };
@@ -454,7 +509,7 @@ async function handleRequestAIWidgetDivergeGpt35(request) {
 
     const AzureOpenAIlangchain = new ChatOpenAI({
       azureOpenAIApiKey: key,
-      azureOpenAIApiInstanceName: "",//your azureOpenAiApiInstanceName
+      azureOpenAIApiInstanceName: "boardxai",
       azureOpenAIApiDeploymentName: "gpt35-16k",
       azureOpenAIApiVersion: "2023-06-01-preview",
       temperature: commandData.temperature
@@ -511,13 +566,15 @@ try {
   // 解析获取传入的信息。假设信息是JSON格式并用POST方法发送
   const { commandData, prompt } = await request.json();
 
-  const key = apiKeyTest;
+  const key = azureApiKeyGpt4;
 
   let totalTokens = null;
 
   const OpenAIlangchain = new ChatOpenAI({
-    openAIApiKey: key,
-    modelName: "gpt-4",
+    azureOpenAIApiKey: key,
+    azureOpenAIApiInstanceName: "boardxgpt4",
+    azureOpenAIApiDeploymentName: "gpt4",
+    azureOpenAIApiVersion: "2023-06-01-preview",
     temperature: commandData.temperature
       ? Number(commandData.temperature)
       : 0.8,
@@ -576,21 +633,39 @@ const getDefinePromptTemplate = (commandData) => {
 
     for (var i = 0; i < commandData.customizedContentOutputFormat.length; i++) {
       let item = commandData.customizedContentOutputFormat[i];
-      // parserObj[item.title] = z.array(z.string()).describe(item.description);
+
       parserObj[item.title] = z.array(z.string()).describe("");
     }
 
     const parser = StructuredOutputParser.fromZodSchema(z.object(parserObj));
 
-    const formatInstructions = parser.getFormatInstructions();
+    const questionPromptTemplateString = `Context information is below.
+      ---------------------
+      {context}
+      ---------------------
+      Given the context information and no prior knowledge, answer the question: {question}`;
 
     const questionPromptTemplate = new PromptTemplate({
-      template: "\n{format_instructions}\n{question}",
-      inputVariables: ["question"],
-      partialVariables: { format_instructions: formatInstructions },
+      inputVariables: ["context", "question"],
+      template: questionPromptTemplateString,
     });
 
-    return { parser, questionPromptTemplate };
+    const refinePromptTemplateString = `The original question is as follows: {question}
+      We have provided an existing answer: {existing_answer}
+      We have the opportunity to refine the existing answer
+      (only if needed) with some more context below.
+      ------------
+      {context}
+      ------------
+      Given the new context, refine the original answer to better answer the question.
+      You must provide a response, either original answer or refined answer.`;
+
+    const refinePrompt = new PromptTemplate({
+      inputVariables: ["question", "existing_answer", "context"],
+      template: refinePromptTemplateString,
+    });
+
+    return { parser, questionPromptTemplate, refinePrompt };
   } else {
     return { parser: null, questionPromptTemplate: null };
   }
@@ -603,7 +678,7 @@ const langchainRefineProcessingText = async (
   docsContent,
   commandData
 ) => {
-  const { parser, questionPromptTemplate } =
+  const { parser, questionPromptTemplate, refinePrompt } =
     getDefinePromptTemplate(commandData);
 
   const embeddings = new OpenAIEmbeddings(refineEmbeddingsModel);
@@ -613,6 +688,7 @@ const langchainRefineProcessingText = async (
   if (questionPromptTemplate) {
     chain = loadQARefineChain(llms, {
       questionPrompt: questionPromptTemplate,
+      refinePrompt: refinePrompt,
     });
   }
 
