@@ -32,11 +32,10 @@ async function handleRequestGML(request, res) {
   try {
     // Parse incoming information; assuming it's in JSON format sent via POST method
     const { commandData, prompt } = await request.json();
-  
+
     const apiKey = settings.gmlKey;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
-    
     const url = 'https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke';
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -47,10 +46,6 @@ async function handleRequestGML(request, res) {
       headers: headers,
       body: JSON.stringify({ commandData, prompt }),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
     
     const { readable, writable } = new TransformStream();
     const reader = response.body.getReader();
@@ -75,7 +70,7 @@ async function handleRequestGML(request, res) {
     // Send streaming response to the client
     res.status(200).json(readable);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(502).json(error);
   }
 }
 export {
