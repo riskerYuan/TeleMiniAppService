@@ -1,0 +1,75 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files (x86)\Yozosoft\Yozo_Office\Lib\xuggler\bin;C:\Program Files (x86)\Yarn\bin\;C:\ProgramData\chocolatey\bin;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Roaming\npm;C:\Program Files\nodejs\;e:\微信web开发者工具\dll;;;C:\Program Files\Git\cmd;D:\微信web开发者工具\dll;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\dotnet\;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Administrator\AppData\Local\Yarn\bin;C:\Users\Administrator\AppData\Local\.meteor;C:\Users\Administrator\AppData\Local\.meteor\;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Local\nvs\
+
+Yarn version: 
+  1.23.0-20200615.1913
+
+Node version: 
+  16.8.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: connect ETIMEDOUT 104.16.25.34:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1146:16)
+
+npm manifest: 
+  {
+    "name": "avaservice",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "jest",
+      "start": "babel-node server.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/m3360202/avaService.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/m3360202/avaService/issues"
+    },
+    "homepage": "https://github.com/m3360202/avaService#readme",
+    "dependencies": {
+      "@azure/openai": "^1.0.0-beta.7",
+      "axios": "^1.5.0",
+      "cors": "^2.8.5",
+      "eventsource": "^2.0.2",
+      "express": "^4.18.2",
+      "formidable": "^3.5.1",
+      "jest-fetch-mock": "^3.0.3",
+      "langchain": "^0.0.150",
+      "multer": "^1.4.5-lts.1",
+      "node-fetch": "^3.3.2",
+      "openai": "^4.4.0",
+      "streamifier": "^0.1.1",
+      "zod": "^3.22.2"
+    },
+    "devDependencies": {
+      "@babel/cli": "^7.22.15",
+      "@babel/core": "^7.22.17",
+      "@babel/node": "^7.22.15",
+      "@babel/preset-env": "^7.22.15",
+      "babel-jest": "^29.6.4",
+      "babel-loader": "^9.1.3",
+      "jest": "^29.6.4",
+      "supertest": "^6.3.3",
+      "ts-jest": "^29.1.1",
+      "webpack": "^5.88.2",
+      "webpack-cli": "^5.1.4"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

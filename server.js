@@ -2,14 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 import {
-  handleRequestAIChatGpt35,
   handleRequestTest,
-  handleRequestAIChatGpt4,
-  handleRequestAIWidgetConvergeGpt35,
-  handleRequestAIWidgetConvergeGpt4,
-  handleRequestAIWidgetDivergeGpt35,
-  handleRequestAIWidgetDivergeGpt4,
-  handleRequestAIChatAudioToText,
+  handleRequestGML
 } from "./utils";
 
 const app = express();
@@ -27,30 +21,10 @@ function handlePreflight(req, res, next) {
 app.use(handlePreflight);
 
 //Ending points
-app.post("/handleRequestAIChatGpt35", handleRequestAIChatGpt35);
 
 app.get("/handleRequestTest", handleRequestTest);
 
-app.post("/handleRequestAIChatGpt4", handleRequestAIChatGpt4);
-
-app.post(
-  "/handleRequestAIWidgetConvergeGpt35",
-  handleRequestAIWidgetConvergeGpt35
-);
-
-app.post(
-  "/handleRequestAIWidgetConvergeGpt4",
-  handleRequestAIWidgetConvergeGpt4
-);
-
-app.post(
-  "/handleRequestAIWidgetDivergeGpt35",
-  handleRequestAIWidgetDivergeGpt35
-);
-
-app.post("/handleRequestAIWidgetDivergeGpt4", handleRequestAIWidgetDivergeGpt4);
-
-app.post("/handleRequestAIChatAudioToText", handleRequestAIChatAudioToText);
+app.post("/handleRequestGML", handleRequestGML);
 //Functions write here
 
 app.listen(8080, function () {
