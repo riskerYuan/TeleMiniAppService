@@ -28,7 +28,7 @@ function generateToken(apiKey, expSeconds) {
 
   return token;
 }
-async function handleRequestGML(request) {
+async function handleRequestGML(request, res) {
   try {
     // Parse incoming information; assuming it's in JSON format sent via POST method
     const { commandData, prompt } = await request.json();
@@ -73,9 +73,9 @@ async function handleRequestGML(request) {
     });
     
     // Send streaming response to the client
-    request.status(200).json(readable);
+    res.status(200).json(readable);
   } catch (error) {
-    request.status(500).json(error);
+    res.status(500).json(error);
   }
 }
 export {
