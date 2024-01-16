@@ -1,4 +1,5 @@
 import settings from "../settings.js";
+import jwt from 'jsonwebtoken';
 
 async function handleRequestTest(req, res) {
   try {
@@ -20,7 +21,6 @@ function generateToken(apiKey, expSeconds) {
     exp: Math.floor(Date.now() / 1000) + expSeconds,
     timestamp: Math.floor(Date.now() / 1000),
   };
-
   const token = jwt.sign(payload, secret, {
     algorithm: 'HS256',
     header: { alg: 'HS256', sign_type: 'SIGN' },
@@ -30,21 +30,24 @@ function generateToken(apiKey, expSeconds) {
 }
 async function handleRequestGML(request, res) {
   try {
-    // Parse incoming information; assuming it's in JSON format sent via POST method
-    const { commandData, prompt } = await request.json();
-
+    // // Parse incoming information; assuming it's in JSON format sent via POST method
+    const { prompt } = await request.body;
+    console.log('prompt',prompt)
     const apiKey = settings.gmlKey;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
+
     const url = 'https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke';
     const headers = {
+      ContentType : 'application/json',
       Authorization: `Bearer ${token}`,
+      accept: 'text/event-stream'
     };
     
     const response = await fetch(url, {
       method: 'POST',
       headers: headers,
-      body: JSON.stringify({ commandData, prompt }),
+      body: JSON.stringify({prompt}),
     });
     
     const { readable, writable } = new TransformStream();
@@ -67,13 +70,14 @@ async function handleRequestGML(request, res) {
       return reader.read().then(processResult);
     });
     
-    // Send streaming response to the client
+    //Send streaming response to the client
     res.status(200).json(readable);
   } catch (error) {
-    res.status(502).json(error);
+    res.status(506).json(`Error: ${error}`);
   }
 }
 export {
   handleRequestTest,
-  handleRequestGML
+  handleRequestGML,
+  generateToken
 };

@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(cors()); // Enable All CORS Requests
 
-//app.options('*', cors()) // Enable CORS preflight for all routes 测试跨域的时候开启这个地方
+app.options('*', cors()) // Enable CORS preflight for all routes 测试跨域的时候开启这个地方
 
 function handlePreflight(req, res, next) {
   next();
