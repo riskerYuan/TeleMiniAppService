@@ -1,5 +1,7 @@
 import settings from "../settings.js";
 import jwt from 'jsonwebtoken';
+import axios from "axios";
+import { Readable } from 'stream';
 
 async function handleRequestTest(req, res) {
   try {
@@ -28,54 +30,72 @@ function generateToken(apiKey, expSeconds) {
 
   return token;
 }
-async function handleRequestGML(request, res) {
+async function handleRequestGML(req, res) {
   try {
-    // // Parse incoming information; assuming it's in JSON format sent via POST method
-    const { prompt } = await request.body;
-    console.log('prompt',prompt)
+    const { prompt } = req.body;
     const apiKey = settings.gmlKey;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
-
-    const url = 'https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_turbo/sse-invoke';
+  
+    const url = 'https://open.bigmodel.cn/api/paas/v3/model-api/chatglm_pro/sse-invoke';
     const headers = {
-      ContentType : 'application/json',
-      Authorization: `Bearer ${token}`,
-      accept: 'text/event-stream'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     };
-    
-    const response = await fetch(url, {
-      method: 'POST',
+  
+    const response = await axios.post(url, {
+      model: 'chatglm_pro',
+      prompt,
+      temperature: 0.10,
+      top_p: 0.70,
+      stream: true
+    }, {
       headers: headers,
-      body: JSON.stringify({prompt}),
+      responseType: 'stream'
     });
-    
-    const { readable, writable } = new TransformStream();
-    const reader = response.body.getReader();
-    
-    reader.read().then(function processResult(result) {
-      if (result.done) {
-        // All data has been processed
-        console.log('Streaming completed');
-        return;
+  
+    let dataBuffer = '';
+  
+    // 创建一个可读流来处理数据
+    const readable = new Readable({
+      read(size) {
+        // 不需要实现读取逻辑，因为数据将通过下面的监听器处理
       }
-      
-      const chunk = result.value;
-      
-      // Process each chunk of data received
-      const data = new TextDecoder().decode(chunk);
-      console.log(data);
-      
-      // Continue reading the next chunk
-      return reader.read().then(processResult);
     });
-    
-    //Send streaming response to the client
-    res.status(200).json(readable);
+  
+    // 监听数据事件并处理 SSE 数据
+    response.data.on('data', (chunk) => {
+      const chunkStr = chunk.toString();
+      dataBuffer += chunkStr;
+  
+      // 分割数据，找到所有的事件并提取 data 部分发送
+      const events = dataBuffer.split('\n');
+      events.forEach((event) => {
+        if (event.startsWith('data:')) {
+          // 发送 data 部分给前端，移除 'data:' 和可能的空格
+          const data = event.slice(5).trim();
+          readable.push(data);
+        }
+      });
+  
+      // 清理已经处理的数据
+      if (events.length > 0) {
+        dataBuffer = events[events.length - 1]; // 保留最后一个可能不完整的事件
+      }
+    });
+  
+    // 监听结束事件
+    response.data.on('end', () => {
+      readable.push(null); // 标记流的结束
+    });
+  
+    // 将处理后的流发送给前端
+    readable.pipe(res);
+  
   } catch (error) {
     res.status(506).json(`Error: ${error}`);
   }
-}
+ }
 export {
   handleRequestTest,
   handleRequestGML,
