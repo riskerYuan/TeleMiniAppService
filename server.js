@@ -3,7 +3,8 @@ const cors = require("cors");
 
 import {
   handleRequestTest,
-  handleRequestGML
+  handleRequestGML,
+  handleRequestGML4,
 } from "./utils";
 
 const app = express();
@@ -25,6 +26,8 @@ app.use(handlePreflight);
 app.get("/handleRequestTest", handleRequestTest);
 
 app.post("/handleRequestGML", handleRequestGML);
+
+app.post("/handleRequestGML4", handleRequestGML4);
 //Functions write here
 
 app.listen(8080, function () {
