@@ -166,7 +166,7 @@ async function handleRequestGML4(req, res) {
             res.write(data.choices[0].delta.content);
           }
         } catch (e) {
-          console.error('Failed to parse the last data unit:', e.message);
+          // console.error('Failed to parse the last data unit:', e.message);
         }
       }
       res.end();
