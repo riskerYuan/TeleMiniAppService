@@ -98,9 +98,88 @@ async function handleRequestGML(req, res) {
   }
 }
 
-async function handleRequestGML4(req, res) {
+// async function handleRequestGML4(req, res) {
+//   try {
+//     const { prompt } = req.body;
+//     const apiKey = settings.gmlKey;
+//     const expirationInSeconds = 60 * 60 * 24 * 30;
+//     const token = generateToken(apiKey, expirationInSeconds);
+
+//     const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+//     const headers = {
+//       'Content-Type': 'application/json',
+//       'Authorization': `Bearer ${token}`
+//     };
+
+//     const response = await axios.post(url, {
+//       model: 'glm-4',
+//       messages: prompt,
+//       temperature: 0.10,
+//       top_p: 0.70,
+//       stream: true
+//     }, {
+//       headers: headers,
+//       responseType: 'stream'
+//     });
+
+//     let buffer = '';
+//     let dataUnit = '';
+
+//     // 处理流式响应
+//     response.data.on('data', (chunk) => {
+//       buffer += chunk.toString();
+
+//       // 假设每个数据单元以特定的标记开始和结束
+//       const startMarker = 'data: ';
+//       const endMarker = '\n';
+
+//       // 查找数据单元的开始和结束
+//       let startIndex = buffer.indexOf(startMarker);
+//       let endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
+
+//       while (startIndex !== -1 && endIndex !== -1) {
+//         // 提取数据单元
+//         dataUnit = buffer.substring(startIndex + startMarker.length, endIndex);
+//         try {
+//           const data = JSON.parse(dataUnit);
+//           // 处理数据
+//           if (data.choices && data.choices[0] && data.choices[0].delta) {
+//             res.write(data.choices[0].delta.content);
+//           }
+//         } catch (e) {
+//           console.error('Failed to parse data unit:', e.message);
+//         }
+//         // 移除已处理的数据
+//         buffer = buffer.substring(endIndex + endMarker.length);
+//         startIndex = buffer.indexOf(startMarker);
+//         endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
+//       }
+//     });
+
+//     response.data.on('end', () => {
+//       // 处理剩余的数据（如果有的话）
+//       if (buffer.startsWith('data: ')) {
+//         const dataUnit = buffer.substring(5); // 假设没有结束标记
+//         try {
+//           const data = JSON.parse(dataUnit);
+//           if (data.choices && data.choices[0] && data.choices[0].delta) {
+//             res.write(data.choices[0].delta.content);
+//           }
+//         } catch (e) {
+//           // console.error('Failed to parse the last data unit:', e.message);
+//         }
+//       }
+//       res.end();
+//     });
+//   } catch (error) {
+//     res.status(506).json(`Error: ${error}`);
+//   }
+// }
+
+async function handleRequestGML4ForPaperGpt(req, res) {
   try {
-    const { prompt } = req.body;
+    const { prompt,top_p,temperature } = req.body;
+
     const apiKey = settings.gmlKey;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
@@ -111,73 +190,27 @@ async function handleRequestGML4(req, res) {
       'Authorization': `Bearer ${token}`
     };
 
-    const response = await axios.post(url, {
+    const data = {
       model: 'glm-4',
       messages: prompt,
-      temperature: 0.10,
-      top_p: 0.70,
-      stream: true
-    }, {
-      headers: headers,
-      responseType: 'stream'
+      temperature: temperature,
+      top_p: top_p,
+    }
+
+    const response = await axios.post(url, data, {
+      headers: headers
     });
 
-    let buffer = '';
-    let dataUnit = '';
-
-    // 处理流式响应
-    response.data.on('data', (chunk) => {
-      buffer += chunk.toString();
-
-      // 假设每个数据单元以特定的标记开始和结束
-      const startMarker = 'data: ';
-      const endMarker = '\n';
-
-      // 查找数据单元的开始和结束
-      let startIndex = buffer.indexOf(startMarker);
-      let endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
-
-      while (startIndex !== -1 && endIndex !== -1) {
-        // 提取数据单元
-        dataUnit = buffer.substring(startIndex + startMarker.length, endIndex);
-        try {
-          const data = JSON.parse(dataUnit);
-          // 处理数据
-          if (data.choices && data.choices[0] && data.choices[0].delta) {
-            res.write(data.choices[0].delta.content);
-          }
-        } catch (e) {
-          console.error('Failed to parse data unit:', e.message);
-        }
-        // 移除已处理的数据
-        buffer = buffer.substring(endIndex + endMarker.length);
-        startIndex = buffer.indexOf(startMarker);
-        endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
-      }
-    });
-
-    response.data.on('end', () => {
-      // 处理剩余的数据（如果有的话）
-      if (buffer.startsWith('data: ')) {
-        const dataUnit = buffer.substring(5); // 假设没有结束标记
-        try {
-          const data = JSON.parse(dataUnit);
-          if (data.choices && data.choices[0] && data.choices[0].delta) {
-            res.write(data.choices[0].delta.content);
-          }
-        } catch (e) {
-          // console.error('Failed to parse the last data unit:', e.message);
-        }
-      }
-      res.end();
-    });
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(506).json(`Error: ${error}`);
+    console.error(error.message); // 只记录错误消息
+  res.status(506).json({ error: error.message });
   }
 }
 export {
   handleRequestTest,
   handleRequestGML,
-  handleRequestGML4,
+  // handleRequestGML4,
+  handleRequestGML4ForPaperGpt,
   generateToken
 };
