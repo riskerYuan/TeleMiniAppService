@@ -5,7 +5,8 @@ import {
   handleRequestTest,
   handleRequestGML,
   // handleRequestGML4,
-  handleRequestGML4ForPaperGpt
+  handleRequestGML4ForPaperGpt,
+  handleRequestZw
 } from "./utils";
 
 const app = express();
@@ -25,6 +26,8 @@ app.post("/handleRequestGML", handleRequestGML);
 // app.post("/handleRequestGML4", handleRequestGML4);
 
 app.post("/handleRequestGML4ForPaperGpt", handleRequestGML4ForPaperGpt);
+
+app.post("/handleRequestZw", handleRequestZw);
 //Functions write here
 
 app.listen(8080, function () {

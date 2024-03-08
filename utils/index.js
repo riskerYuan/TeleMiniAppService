@@ -207,10 +207,47 @@ async function handleRequestGML4ForPaperGpt(req, res) {
   res.status(506).json({ error: error.message });
   }
 }
+
+async function handleRequestZw(req, res) {
+  try {
+    const { keyword,page,year } = req.body;
+
+    const url = 'https://wap.cnki.net/gate/m052/web/api/article/search';
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    let data = 
+        {
+            "keyword":keyword,
+            "searchType":0,
+            "dbType":"",
+            "pageIndex":page,
+            "pageSize":20,
+            "articletype":0,
+            "sorttype":0,
+            "fieldtype":101,
+            "yeartype":year,
+            "remark":"",
+            "yearinterval":"",
+            "screen":{"screentype":0,"isscreen":"","subject_sc":"","research_sc":"","depart_sc":"","author_sc":"","subjectcode_sc":"","researchcode_sc":"","departcode_sc":"","authorcode_sc":"","sponsor_sc":"","teacher_sc":"","sponsorcode_sc":"","teachercode_sc":"","starttime_sc":"","endtime_sc":"","timestate_sc":""},"senior":{"theme_kw":"","title_kw":"","full_kw":"","author_kw":"","depart_kw":"","key_kw":"","abstract_kw":"","source_kw":"","teacher_md":"","catalog_md":"","depart_md":"","refer_md":"","name_meet":"","collect_meet":""}
+        }
+
+    const response = await axios.post(url, data, {
+      headers: headers
+    });
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(error.message); // 只记录错误消息
+  res.status(506).json({ error: error.message });
+  }
+}
+
 export {
   handleRequestTest,
   handleRequestGML,
   // handleRequestGML4,
   handleRequestGML4ForPaperGpt,
+  handleRequestZw,
   generateToken
 };
