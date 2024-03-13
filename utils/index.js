@@ -2,7 +2,11 @@ import settings from "../settings.js";
 import jwt from 'jsonwebtoken';
 import axios from "axios";
 import { Readable } from 'stream';
-import { Transform } from 'stream';
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: settings.openaiKey
+});
 
 async function handleRequestTest(req, res) {
   try {
@@ -31,6 +35,22 @@ function generateToken(apiKey, expSeconds) {
 
   return token;
 }
+
+function reBuildContext(context){
+  let newArr = [];
+  context.map((item)=>{
+    if(item.role === 'use'){
+      newArr.push(item);
+    }
+    if(item.role === 'assistant'){
+      item.role === 'system';
+      newArr.push(item);
+    }
+  })
+  return newArr;
+
+}
+
 async function handleRequestGML(req, res) {
   try {
     const { prompt } = req.body;
@@ -98,83 +118,21 @@ async function handleRequestGML(req, res) {
   }
 }
 
-// async function handleRequestGML4(req, res) {
-//   try {
-//     const { prompt } = req.body;
-//     const apiKey = settings.gmlKey;
-//     const expirationInSeconds = 60 * 60 * 24 * 30;
-//     const token = generateToken(apiKey, expirationInSeconds);
+async function handleRequestGPT4(req, res) {
+  try {
+    
+    const { prompt } = req.body;
+    const completion = await openai.chat.completions.create({
+      messages: prompt,
+      model: "gpt-4-turbo",
+    });
 
-//     const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-//     const headers = {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${token}`
-//     };
-
-//     const response = await axios.post(url, {
-//       model: 'glm-4',
-//       messages: prompt,
-//       temperature: 0.10,
-//       top_p: 0.70,
-//       stream: true
-//     }, {
-//       headers: headers,
-//       responseType: 'stream'
-//     });
-
-//     let buffer = '';
-//     let dataUnit = '';
-
-//     // 处理流式响应
-//     response.data.on('data', (chunk) => {
-//       buffer += chunk.toString();
-
-//       // 假设每个数据单元以特定的标记开始和结束
-//       const startMarker = 'data: ';
-//       const endMarker = '\n';
-
-//       // 查找数据单元的开始和结束
-//       let startIndex = buffer.indexOf(startMarker);
-//       let endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
-
-//       while (startIndex !== -1 && endIndex !== -1) {
-//         // 提取数据单元
-//         dataUnit = buffer.substring(startIndex + startMarker.length, endIndex);
-//         try {
-//           const data = JSON.parse(dataUnit);
-//           // 处理数据
-//           if (data.choices && data.choices[0] && data.choices[0].delta) {
-//             res.write(data.choices[0].delta.content);
-//           }
-//         } catch (e) {
-//           console.error('Failed to parse data unit:', e.message);
-//         }
-//         // 移除已处理的数据
-//         buffer = buffer.substring(endIndex + endMarker.length);
-//         startIndex = buffer.indexOf(startMarker);
-//         endIndex = buffer.indexOf(endMarker, startIndex + startMarker.length);
-//       }
-//     });
-
-//     response.data.on('end', () => {
-//       // 处理剩余的数据（如果有的话）
-//       if (buffer.startsWith('data: ')) {
-//         const dataUnit = buffer.substring(5); // 假设没有结束标记
-//         try {
-//           const data = JSON.parse(dataUnit);
-//           if (data.choices && data.choices[0] && data.choices[0].delta) {
-//             res.write(data.choices[0].delta.content);
-//           }
-//         } catch (e) {
-//           // console.error('Failed to parse the last data unit:', e.message);
-//         }
-//       }
-//       res.end();
-//     });
-//   } catch (error) {
-//     res.status(506).json(`Error: ${error}`);
-//   }
-// }
+    res.status(200).json(completion.choices[0]);
+  } catch (error) {
+    console.error('error---',error.message); // 只记录错误消息
+  res.status(506).json({ error: error.message });
+  }
+}
 
 async function handleRequestGML4ForPaperGpt(req, res) {
   try {
@@ -246,7 +204,7 @@ async function handleRequestZw(req, res) {
 export {
   handleRequestTest,
   handleRequestGML,
-  // handleRequestGML4,
+  handleRequestGPT4,
   handleRequestGML4ForPaperGpt,
   handleRequestZw,
   generateToken

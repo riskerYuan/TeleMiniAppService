@@ -4,7 +4,7 @@ const cors = require("cors");
 import {
   handleRequestTest,
   handleRequestGML,
-  // handleRequestGML4,
+  handleRequestGPT4,
   handleRequestGML4ForPaperGpt,
   handleRequestZw
 } from "./utils";
@@ -23,7 +23,7 @@ app.get("/handleRequestTest", handleRequestTest);
 
 app.post("/handleRequestGML", handleRequestGML);
 
-// app.post("/handleRequestGML4", handleRequestGML4);
+app.post("/handleRequestGPT4", handleRequestGPT4);
 
 app.post("/handleRequestGML4ForPaperGpt", handleRequestGML4ForPaperGpt);
 
