@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "build": "npm install --production",
     "start": "babel-node index.js"
   },
   "repository": {
