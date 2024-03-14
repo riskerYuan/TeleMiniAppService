@@ -4,6 +4,7 @@ package-lock.json
 yarn.lock
 settings.js
 .vscode
+.env
 .deploy
 .deploycn
 .deployhk
