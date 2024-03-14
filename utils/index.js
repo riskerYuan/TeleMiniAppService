@@ -4,7 +4,7 @@ import { Readable } from 'stream';
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: env.OPENAIKEY
+  apiKey: process.env.OPENAIKEY
 });
 
 async function handleRequestTest(req, res) {
@@ -53,7 +53,7 @@ function reBuildContext(context){
 async function handleRequestGML(req, res) {
   try {
     const { prompt } = req.body;
-    const apiKey = env.GLMKEY;
+    const apiKey = process.env.GLMKEY;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
 
@@ -137,7 +137,7 @@ async function handleRequestGML4ForPaperGpt(req, res) {
   try {
     const { prompt,top_p,temperature } = req.body;
 
-    const apiKey = env.GLMKEY;
+    const apiKey = process.env.GLMKEY;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
 
