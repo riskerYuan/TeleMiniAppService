@@ -30,6 +30,6 @@ app.post("/handleRequestGML4ForPaperGpt", handleRequestGML4ForPaperGpt);
 app.post("/handleRequestZw", handleRequestZw);
 //Functions write here
 
-app.listen(8080, function () {
+app.listen(3000, function () {
   console.log("Server is running on port 8080");
 });
