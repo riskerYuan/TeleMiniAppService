@@ -1,11 +1,10 @@
-import settings from "../settings.js";
 import jwt from 'jsonwebtoken';
 import axios from "axios";
 import { Readable } from 'stream';
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: settings.openaiKey
+  apiKey: env.OPENAIKEY
 });
 
 async function handleRequestTest(req, res) {
@@ -54,7 +53,7 @@ function reBuildContext(context){
 async function handleRequestGML(req, res) {
   try {
     const { prompt } = req.body;
-    const apiKey = settings.gmlKey;
+    const apiKey = env.GLMKEY;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
 
@@ -138,7 +137,7 @@ async function handleRequestGML4ForPaperGpt(req, res) {
   try {
     const { prompt,top_p,temperature } = req.body;
 
-    const apiKey = settings.gmlKey;
+    const apiKey = env.GLMKEY;
     const expirationInSeconds = 60 * 60 * 24 * 30;
     const token = generateToken(apiKey, expirationInSeconds);
 
