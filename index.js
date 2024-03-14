@@ -7,7 +7,7 @@ import {
   handleRequestGPT4,
   handleRequestGML4ForPaperGpt,
   handleRequestZw
-} from "../utils";
+} from "./utils/functions";
 
 const app = express();
 
