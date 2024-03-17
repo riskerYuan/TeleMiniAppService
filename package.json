@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "npm install --production && babel-node index.js"
+    "build": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/m3360202/avaService#readme",
   "dependencies": {
+    "@vercel/node": "^3.0.24",
     "axios": "^1.5.0",
     "cors": "^2.8.5",
     "eventsource": "^2.0.2",
@@ -32,6 +33,7 @@
     "streamifier": "^0.1.1",
     "zod": "^3.22.2"
   },
+  "type": "module",
   "devDependencies": {
     "@babel/cli": "^7.22.15",
     "@babel/core": "^7.22.17",
