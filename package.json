@@ -22,6 +22,7 @@
     "@vercel/node": "^3.0.24",
     "axios": "^1.5.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "eventsource": "^2.0.2",
     "express": "^4.18.2",
     "formidable": "^3.5.1",
