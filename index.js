@@ -1,34 +1,27 @@
-import express from "express";
-import cors from "cors";
-import {
-  handleRequestTest,
-  handleRequestGML,
-  handleRequestGPT4,
-  handleRequestGML4ForPaperGpt,
-  handleRequestZw,
-} from "./utils/functions.js";
+import { Telegraf } from 'telegraf';
+import { message } from 'telegraf/filters';
+import dotenv from 'dotenv';
 
-const app = express();
+dotenv.config();
 
-app.use(express.json());
+const TOKEN = process.env.MINI_APP_TOKEN;
+const APP_LINK = process.env.APP_LINK;
 
-app.use(cors()); // Enable All CORS Requests
+const bot = new Telegraf(TOKEN);
+console.log('Mini App Bot Ready!');
 
-app.options("*", cors()); // Enable CORS preflight for all routes 测试跨域的时候开启这个地方
+bot.start((ctx) =>
+    ctx.reply('Welcome To Open Graph', {
+        reply_markup: {
+            keyboard: [[{ text: 'Open Graph App', web_app: { url: APP_LINK } }]],
+        },
+    })
+);
 
-//Ending points
+bot.help((ctx) => ctx.reply('Send me a sticker'));
 
-app.get("/handleRequestTest", handleRequestTest);
+bot.on(message('sticker'), (ctx) => ctx.reply('👍'));
 
-app.post("/handleRequestGML", handleRequestGML);
+bot.hears('hi', (ctx) => ctx.reply('Hey there'));
 
-app.post("/handleRequestGPT4", handleRequestGPT4);
-
-app.post("/handleRequestGML4ForPaperGpt", handleRequestGML4ForPaperGpt);
-
-app.post("/handleRequestZw", handleRequestZw);
-//Functions write here
-
-app.listen(3008, function () {
-  console.log("Server is running on port 3000");
-});
+bot.launch();
